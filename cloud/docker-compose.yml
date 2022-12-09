@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - db_default
+      - default
+
+  nextcloud:
+    image: nextcloud:apache
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+    environment:
+      - VIRTUAL_HOST=cloud.jeschek.eu
+      - LETSENCRYPT_HOST=cloud.jeschek.eu
+      - LETSENCRYPT_EMAIL=dev@jeschek.eu
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+      - NEXTCLOUD_HOSTNAME=cloud.jeschek.eu
+    env_file:
+      - db.env
+    depends_on:
+      - redis
+      # - postgres
+    networks:
+      - proxy_default
+      - default
+      - db_default
+
+  cron:
+    image: nextcloud:apache
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+    entrypoint: /cron.sh
+    depends_on:
+      - redis
+      # - postgres
+    networks:
+      - db_default
+      - default
+
+volumes:
+  db:
+  nextcloud:
+  certs:
+  acme:
+  vhost.d:
+  html:
+
+networks:
+  proxy_default:
+    external: true
+  db_default:
+    external: true
