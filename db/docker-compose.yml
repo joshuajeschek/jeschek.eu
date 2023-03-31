@@ -2,16 +2,16 @@ version: '3.8'
 services:
   postgres:
     container_name: postgres
-    image: postgres
+    image: postgres:alpine
     restart: always
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: joshuajeschek
+    volumes:
+      - /root/data/postgres:/var/lib/postgresql/data
+    env_file:
+      - postgres.env
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
   pgadmin:
-    container_name: pgadmin4
+    container_name: pgadmin
     image: dpage/pgadmin4
     restart: always
     networks:
@@ -21,7 +21,7 @@ services:
       - VIRTUAL_HOST=db.jeschek.eu
       - LETSENCRYPT_HOST=db.jeschek.eu
       - LETSENCRYPT_EMAIL=dev@jeschek.eu
-      - PGADMIN_DEFAULT_EMAIL=dev@jeschek.eu
+      - PGADMIN_DEFAULT_EMAIL=root@jeschek.eu
       - PGADMIN_DEFAULT_PASSWORD=root
 networks:
   proxy_default:
