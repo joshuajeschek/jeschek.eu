@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+
+  rallly:
+    image: lukevella/rallly:latest
+    restart: always
+    environment:
+      - VIRTUAL_HOST=rallly.jeschek.eu
+      - LETSENCRYPT_HOST=rallly.jeschek.eu
+      - LETSENCRYPT_EMAIL=dev@jeschek.eu
+    env_file:
+      - rallly.env
+    networks:
+      - proxy_default
+      - default
+      - db_default
+
+networks:
+  proxy_default:
+    external: true
+  db_default:
+    external: true
