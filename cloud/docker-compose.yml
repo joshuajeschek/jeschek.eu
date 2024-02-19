@@ -4,20 +4,14 @@ services:
 
   redis:
     image: redis:alpine
-    restart: always
-    networks:
-      - db_default
-      - default
+    restart: unless-stopped
 
-  nextcloud:
-    image: nextcloud:apache
-    restart: always
+  app:
+    image: nextcloud:fpm-alpine
     volumes:
-      - nextcloud:/var/www/html
+      - nextcloud:/var/www/html:z
+      - /mnt/storage/nextcloud:/var/www/html/data:z
     environment:
-      - VIRTUAL_HOST=cloud.jeschek.eu
-      - LETSENCRYPT_HOST=cloud.jeschek.eu
-      - LETSENCRYPT_EMAIL=dev@jeschek.eu
       - POSTGRES_HOST=postgres
       - REDIS_HOST=redis
       - NEXTCLOUD_HOSTNAME=cloud.jeschek.eu
@@ -25,32 +19,42 @@ services:
       - db.env
     depends_on:
       - redis
-      # - postgres
     networks:
-      - proxy_default
       - default
       - db_default
+    restart: unless-stopped
 
   cron:
-    image: nextcloud:apache
-    restart: always
-    volumes:
-      - nextcloud:/var/www/html
+    image: nextcloud:fpm-alpine
     entrypoint: /cron.sh
+    volumes:
+      - nextcloud:/var/www/html:z
+      - /mnt/storage/nextcloud:/var/www/html/data:z
     depends_on:
       - redis
-      # - postgres
     networks:
-      - db_default
       - default
+      - db_default
+    restart: unless-stopped
+
+  web:
+    build: ./web
+    volumes:
+      - nextcloud:/var/www/html:z,ro
+      - /mnt/storage/nextcloud:/var/www/html/data:z,ro
+    environment:
+      - VIRTUAL_HOST=cloud.jeschek.eu
+      - LETSENCRYPT_HOST=cloud.jeschek.eu
+      - LETSENCRYPT_EMAIL=dev@jeschek.eu
+    depends_on:
+      - app
+    networks:
+      - default
+      - proxy_default
+    restart: unless-stopped
 
 volumes:
-  db:
   nextcloud:
-  certs:
-  acme:
-  vhost.d:
-  html:
 
 networks:
   proxy_default:
