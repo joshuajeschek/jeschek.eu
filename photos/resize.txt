@@ -1,0 +1,2 @@
+/usr/src/app/www/favicon-16.png
+/usr/src/app/www/favicon-144.png
