@@ -1,0 +1,5 @@
+/var/www/html/apps/dashboard/img/dashboard.svg
+/var/www/html/apps/files/img/app.svg
+/var/www/html/apps/activity/img/activity.svg
+/var/www/html/custom_apps/contacts/img/app.svg
+/var/www/html/custom_apps/calendar/img/calendar.svg
