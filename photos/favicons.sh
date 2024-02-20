@@ -70,4 +70,18 @@ while IFS= read -r line; do
     echo "Resized and processed $line"
 done < "$resize_list"
 
+
+path='/usr/src/app/www/favicon.ico'
+file_name=$(basename $path)
+target_path="$favicons_folder/$file_name"
+backup_path="$target_path.bak"
+docker compose -p photos cp "immich-server:$path" "$target_path"
+
+if [ ! -f "$backup_path" ]; then
+    cp "$target_path" "$backup_path"
+fi
+
+convert "$favicons_folder/favicon.png" -resize 256x256 -define icon:auto-resize=64,48,32,16 "$target_path"
+docker compose -p photos cp "$target_path" "immich-server:$path"
+
 echo "All files processed and resized as requested."
