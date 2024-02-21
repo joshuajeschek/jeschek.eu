@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  foundry:
+    image: felddy/foundryvtt:release
+    volumes:
+      - type: bind
+        source: /home/foundry/data
+        target: /data
+    environment:
+      - VIRTUAL_HOST=foundry.jeschek.eu
+      - LETSENCRYPT_HOST=foundry.jeschek.eu
+      - LETSENCRYPT_EMAIL=dev@jeschek.eu
+    env_file:
+      - foundry.env
+    networks:
+      - default
+      - proxy_default
+
+networks:
+  proxy_default:
+    external: true
