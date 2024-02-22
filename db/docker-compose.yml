@@ -21,8 +21,8 @@ services:
       - proxy_default
       - default
     environment:
-      - VIRTUAL_HOST=pg.jeschek.eu
-      - LETSENCRYPT_HOST=pg.jeschek.eu
+      - VIRTUAL_HOST=db.jeschek.eu
+      - LETSENCRYPT_HOST=db.jeschek.eu
       - LETSENCRYPT_EMAIL=dev@jeschek.eu
       - PGADMIN_DEFAULT_EMAIL=root@jeschek.eu
       - PGADMIN_DEFAULT_PASSWORD=root
