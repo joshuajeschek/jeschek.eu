@@ -16,6 +16,7 @@ services:
     networks:
       - default
       - proxy_default
+    restart: unless-stopped
 
 networks:
   proxy_default:
