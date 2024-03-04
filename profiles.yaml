@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://creativeprojects.github.io/resticprofile/jsonschema/config-1.json
+
+version: '1'
+
+default:
+  repository: 'local:/mnt/storage/restic'
+  password-file: 'restic.key'
+
+  backup:
+    verbose: true
+    source:
+      - '/mnt/storage/nextcloud'
+      - '/mnt/storage/immich'
+      - '/home/foundry'
+      - '.dumps'
+    schedule: '03:00'
+    schedule-priority: background
+    schedule-log: backup.log

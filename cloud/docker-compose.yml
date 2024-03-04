@@ -53,6 +53,20 @@ services:
       - proxy_default
     restart: unless-stopped
 
+  backup:
+    image: prodrigestivill/postgres-backup-local
+    env_file:
+      - db.env
+    environment:
+      POSTGRES_HOST: postgres
+      BACKUP_DIR: /dumps
+      SCHEDULE: "0 2 * * *"
+    volumes:
+      - ../.dumps/nextcloud:/dumps
+    networks:
+      - db_default
+    restart: unless-stopped
+
 volumes:
   nextcloud:
 
