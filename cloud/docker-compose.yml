@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
 
   app:
-    image: nextcloud:fpm-alpine
+    image: nextcloud:29-fpm-alpine
     volumes:
       - nextcloud:/var/www/html:z
       - /mnt/storage/nextcloud:/var/www/html/data:z
@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   cron:
-    image: nextcloud:fpm-alpine
+    image: nextcloud:29-fpm-alpine
     entrypoint: /cron.sh
     volumes:
       - nextcloud:/var/www/html:z

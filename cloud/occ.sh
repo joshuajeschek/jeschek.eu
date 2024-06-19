@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker compose exec -u www-data app ./occ "$@"
+docker compose exec -u 82 app ./occ "$@"

@@ -2,6 +2,8 @@ version: "3.8"
 
 services:
   foundry:
+    container_name: foundry
+    hostname: foundry
     image: felddy/foundryvtt:release
     volumes:
       - type: bind
