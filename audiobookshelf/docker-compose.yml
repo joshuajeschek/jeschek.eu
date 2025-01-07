@@ -1,0 +1,21 @@
+services:
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    environment:
+      - VIRTUAL_HOST=audio.jeschek.eu
+      - LETSENCRYPT_HOST=audio.jeschek.eu
+      - LETSENCRYPT_EMAIL=dev@jeschek.eu
+      - TZ=Europe/Berlin
+    volumes:
+      - /mnt/storage/audiobookshelf/audiobooks:/audiobooks
+      - /mnt/storage/audiobookshelf/podcasts:/podcasts
+      - ./config:/config
+      - ./metadata:/metadata
+    networks:
+      - default
+      - proxy_default
+    restart: unless-stopped
+
+networks:
+  proxy_default:
+    external: true

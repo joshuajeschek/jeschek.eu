@@ -11,8 +11,15 @@ default:
     source:
       - '/mnt/storage/nextcloud'
       - '/mnt/storage/immich'
+      - '/mnt/storage/audiobookshelf/audiobooks'
       - '/home/foundry'
-      - '.dumps'
+      - '/root/jeschek.eu/foundry/forge'
+      - '/root/jeschek.eu/.dumps'
+      - '/root/jeschek.eu/stardew-valley/.saves'
     schedule: '03:00'
     schedule-priority: background
     schedule-log: backup.log
+  retention:
+    after-backup: true
+    keep-daily: 30
+    prune: true

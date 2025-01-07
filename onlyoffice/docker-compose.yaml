@@ -1,0 +1,43 @@
+services:
+
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./data:/var/www/onlyoffice/Data
+      - ./logs:/var/log/onlyoffice
+      - /var/lib/onlyoffice/documentserver/App_Data/cache/files
+      - /usr/share/fonts
+    environment:
+      - VIRTUAL_HOST=office.jeschek.eu
+      - LETSENCRYPT_HOST=office.jeschek.eu
+      - LETSENCRYPT_EMAIL=dev@simplex4data.de
+      - DB_TYPE=postgres
+      - DB_NAME=onlyoffice
+      - DB_USER=onlyoffice
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - AMQP_URI=amqp://guest:guest@rabbitmq
+    env_file:
+      - onlyoffice.env
+    expose:
+      - '80'
+      - '443'
+    networks:
+      - default
+      - proxy_default
+      - db_default
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq
+    restart: unless-stopped
+    expose:
+      - '5672'
+
+networks:
+  proxy_default:
+    external: true
+  db_default:
+    external: true

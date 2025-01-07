@@ -1,0 +1,21 @@
+services:
+
+  app:
+    image: actualbudget/actual-server:latest
+    restart: unless-stopped
+
+    environment:
+      VIRTUAL_HOST: actual.jeschek.eu
+      LETSENCRYPT_HOST: actual.jeschek.eu
+      LETSENCRYPT_EMAIL: dev@jeschek.eu
+
+    volumes:
+      - ./data:/data
+
+    networks:
+      - proxy_default
+
+
+networks:
+  proxy_default:
+    external: true

@@ -1,24 +1,38 @@
-version: "3.8"
+x-foundry: &foundry
+  image: felddy/foundryvtt:release
+  networks:
+    - default
+    - proxy_default
+  restart: unless-stopped
+  volumes:
+    - cache:/data/container_cache
+  environment:
+    - CONTAINER_CACHE=/data/container_cache
+    - LETSENCRYPT_EMAIL=dev@jeschek.eu
+
 
 services:
   foundry:
-    container_name: foundry
-    hostname: foundry
-    image: felddy/foundryvtt:release
+    <<: *foundry
     volumes:
-      - type: bind
-        source: /home/foundry/data
-        target: /data
+      - /home/foundry/data:/data
     environment:
       - VIRTUAL_HOST=foundry.jeschek.eu
       - LETSENCRYPT_HOST=foundry.jeschek.eu
-      - LETSENCRYPT_EMAIL=dev@jeschek.eu
     env_file:
       - foundry.env
-    networks:
-      - default
-      - proxy_default
-    restart: unless-stopped
+  forge:
+    <<: *foundry
+    volumes:
+      - ./forge:/data
+    environment:
+      - VIRTUAL_HOST=forge.jeschek.eu,blades.jeschek.eu
+      - LETSENCRYPT_HOST=forge.jeschek.eu,blades.jeschek.eu
+    env_file:
+      - forge.env
+
+volumes:
+  cache:
 
 networks:
   proxy_default:

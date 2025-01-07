@@ -1,0 +1,21 @@
+services:
+  stirling-pdf:
+    image: frooodle/s-pdf:latest
+    volumes:
+      - /usr/share/tessdata
+      - /configs
+    environment:
+      - VIRTUAL_HOST=pdf.jeschek.eu
+      - LETSENCRYPT_HOST=pdf.jeschek.eu
+      - LETSENCRYPT_EMAIL=dev@jeschek.eu
+      - DOCKER_ENABLE_SECURITY=false
+      - INSTALL_BOOK_AND_ADVANCED_HTML_OPS=false
+      - LANGS=en_GB
+    networks:
+      - default
+      - proxy_default
+    restart: unless-stopped
+
+networks:
+  proxy_default:
+    external: true

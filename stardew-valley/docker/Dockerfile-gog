@@ -1,0 +1,41 @@
+# Pull base image.
+FROM jlesage/baseimage-gui:debian-11
+
+# Set the name of the application.
+ENV APP_NAME="StardewValley"
+
+# Uses a distinct PATH from Stardew/game/ that GOG has.
+ENV GAME_PATH="/data/Stardew"
+
+RUN apt-get update && apt-get install -y wget unzip tar strace mono-complete xterm gettext-base jq netcat procps && apt-get clean
+
+RUN mkdir -p ${GAME_PATH} && \
+    mkdir -p /data/nexus
+
+COPY game_data /data/Stardew
+
+RUN wget -qO dotnet.tar.gz https://download.visualstudio.microsoft.com/download/pr/d4b71fac-a2fd-4516-ac58-100fb09d796a/e79d6c2a8040b59bf49c0d167ae70a7b/dotnet-sdk-5.0.408-linux-arm64.tar.gz &&\
+     tar -zxf dotnet.tar.gz -C /usr/share/dotnet &&\
+     rm dotnet.tar.gz &&\
+     ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+
+RUN wget --user-agent="Mozilla" https://github.com/Pathoschild/SMAPI/releases/download/4.0.8/SMAPI-4.0.8-installer.zip -qO /data/nexus.zip && \
+    unzip /data/nexus.zip -d /data/nexus/ && \
+    SMAPI_INSTALLER=$(find /data/nexus -name 'SMAPI*.*Installer' -type f -path "*/SMAPI * installer/internal/linux/*" | head -n 1) && \
+    /bin/bash -c "SMAPI_NO_TERMINAL=true SMAPI_USE_CURRENT_SHELL=true echo -e '2\n\n' | \"$SMAPI_INSTALLER\" --install --game-path '/data/Stardew/game'" || :
+
+# Add Mods & Scripts
+COPY ["mods/", "/data/Stardew/game/Mods/"]
+COPY scripts/ /opt/
+
+RUN chmod +x /data/Stardew/game/StardewValley && \
+    chmod -R 777 /data/Stardew/ && \
+    chown -R 1000:1000 /data/Stardew && \
+    chmod +x /opt/*.sh
+
+RUN mkdir /etc/services.d/utils && touch /etc/services.d/app/utils.dep
+COPY run /etc/services.d/utils/run 
+RUN chmod +x /etc/services.d/utils/run 
+
+COPY docker-entrypoint-gog.sh /startapp.sh
+RUN chmod +x /startapp.sh

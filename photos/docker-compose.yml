@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   immich-server:
     container_name: immich_server
@@ -8,13 +6,14 @@ services:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     environment:
+      - VIRTUAL_PORT=2283
       - VIRTUAL_HOST=photos.jeschek.eu
       - LETSENCRYPT_HOST=photos.jeschek.eu
       - LETSENCRYPT_EMAIL=dev@jeschek.eu
     env_file:
       - .env
     ports:
-      - 2283:3001
+      - 2283:2283
     depends_on:
       - redis
       - database
