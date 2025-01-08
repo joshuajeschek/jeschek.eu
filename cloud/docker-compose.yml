@@ -19,7 +19,7 @@ services:
       - redis
     networks:
       - default
-      - db_default
+      - db
     restart: unless-stopped
 
   cron:
@@ -32,7 +32,7 @@ services:
       - redis
     networks:
       - default
-      - db_default
+      - db
     restart: unless-stopped
 
   web:
@@ -43,12 +43,11 @@ services:
     environment:
       - VIRTUAL_HOST=cloud.jeschek.eu
       - LETSENCRYPT_HOST=cloud.jeschek.eu
-      - LETSENCRYPT_EMAIL=dev@jeschek.eu
     depends_on:
       - app
     networks:
       - default
-      - proxy_default
+      - proxy
     restart: unless-stopped
 
   backup:
@@ -62,14 +61,14 @@ services:
     volumes:
       - ../.dumps/nextcloud:/dumps
     networks:
-      - db_default
+      - db
     restart: unless-stopped
 
 volumes:
   nextcloud:
 
 networks:
-  proxy_default:
+  proxy:
     external: true
-  db_default:
+  db:
     external: true

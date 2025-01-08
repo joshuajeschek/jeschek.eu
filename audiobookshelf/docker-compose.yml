@@ -4,7 +4,6 @@ services:
     environment:
       - VIRTUAL_HOST=audio.jeschek.eu
       - LETSENCRYPT_HOST=audio.jeschek.eu
-      - LETSENCRYPT_EMAIL=dev@jeschek.eu
       - TZ=Europe/Berlin
     volumes:
       - /mnt/storage/audiobookshelf/audiobooks:/audiobooks
@@ -13,9 +12,9 @@ services:
       - ./metadata:/metadata
     networks:
       - default
-      - proxy_default
+      - proxy
     restart: unless-stopped
 
 networks:
-  proxy_default:
+  proxy:
     external: true

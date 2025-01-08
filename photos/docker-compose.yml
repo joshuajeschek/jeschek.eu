@@ -9,7 +9,6 @@ services:
       - VIRTUAL_PORT=2283
       - VIRTUAL_HOST=photos.jeschek.eu
       - LETSENCRYPT_HOST=photos.jeschek.eu
-      - LETSENCRYPT_EMAIL=dev@jeschek.eu
     env_file:
       - .env
     ports:
@@ -19,7 +18,7 @@ services:
       - database
     networks:
       - default
-      - proxy_default
+      - proxy
     restart: unless-stopped
 
   immich-machine-learning:
@@ -74,5 +73,5 @@ volumes:
   model-cache:
 
 networks:
-  proxy_default:
+  proxy:
     external: true

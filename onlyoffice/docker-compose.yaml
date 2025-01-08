@@ -12,7 +12,6 @@ services:
     environment:
       - VIRTUAL_HOST=office.jeschek.eu
       - LETSENCRYPT_HOST=office.jeschek.eu
-      - LETSENCRYPT_EMAIL=dev@simplex4data.de
       - DB_TYPE=postgres
       - DB_NAME=onlyoffice
       - DB_USER=onlyoffice
@@ -26,8 +25,8 @@ services:
       - '443'
     networks:
       - default
-      - proxy_default
-      - db_default
+      - proxy
+      - db
     restart: unless-stopped
 
   rabbitmq:
@@ -37,7 +36,7 @@ services:
       - '5672'
 
 networks:
-  proxy_default:
+  proxy:
     external: true
-  db_default:
+  db:
     external: true

@@ -1,0 +1,38 @@
+services:
+
+  app:
+    image: ghcr.io/maybe-finance/maybe:latest
+
+    volumes:
+      - app-storage:/rails/storage
+
+    # ports:
+    #   - 3000:3000
+
+    restart: unless-stopped
+
+    environment:
+      VIRTUAL_HOST: maybe.jeschek.eu
+      LETSENCRYPT_HOST: maybe.jeschek.eu
+      SELF_HOSTED: "true"
+      RAILS_FORCE_SSL: "false"
+      RAILS_ASSUME_SSL: "false"
+      GOOD_JOB_EXECUTION_MODE: async
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:?}
+      DB_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-maybe_production}
+      POSTGRES_USER: ${POSTGRES_USER:-maybe_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+
+    networks:
+      - db
+      - proxy
+
+volumes:
+  app-storage:
+
+networks:
+  proxy:
+    external: true
+  db:
+    external: true

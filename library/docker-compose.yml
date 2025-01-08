@@ -1,0 +1,51 @@
+services:
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: koha
+      MYSQL_USER: koha
+      MYSQL_PASSWORD: koha
+
+  memcached:
+    image: memcached:alpine
+
+  elasticsearch:
+    image: koha/elasticsearch-icu:6.x
+    environment:
+      discovery.type: single-node
+
+  intranet:
+    image: julianmaurice/koha
+    environment:
+      MOJO_MODE: development
+      VIRTUAL_HOST: koha.jeschek.eu
+      VIRTUAL_PORT: 3000
+      LETSENCRYPT_HOST: koha.jeschek.eu
+    depends_on:
+      - db
+      - memcached
+      - elasticsearch
+    networks:
+      - default
+      - proxy
+
+  opac:
+    image: julianmaurice/koha
+    command: ["bin/opac", "prefork"]
+    environment:
+      MOJO_MODE: development
+      VIRTUAL_HOST: library.jeschek.eu
+      VIRTUAL_PORT: 3000
+      LETSENCRYPT_HOST: library.jeschek.eu
+    depends_on:
+      - db
+      - memcached
+      - elasticsearch
+    networks:
+      - default
+      - proxy
+
+networks:
+  proxy:
+    external: true

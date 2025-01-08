@@ -7,15 +7,14 @@ services:
     environment:
       VIRTUAL_HOST: actual.jeschek.eu
       LETSENCRYPT_HOST: actual.jeschek.eu
-      LETSENCRYPT_EMAIL: dev@jeschek.eu
 
     volumes:
       - ./data:/data
 
     networks:
-      - proxy_default
+      - proxy
 
 
 networks:
-  proxy_default:
+  proxy:
     external: true

@@ -1,4 +1,3 @@
-version: '3.8'
 services:
 
   postgres:
@@ -18,12 +17,11 @@ services:
     volumes:
       - pgadmin:/var/lib/pgadmin
     networks:
-      - proxy_default
+      - proxy
       - default
     environment:
       - VIRTUAL_HOST=db.jeschek.eu
       - LETSENCRYPT_HOST=db.jeschek.eu
-      - LETSENCRYPT_EMAIL=dev@jeschek.eu
       - PGADMIN_DEFAULT_EMAIL=root@jeschek.eu
       - PGADMIN_DEFAULT_PASSWORD=root
     restart: unless-stopped
@@ -33,5 +31,7 @@ volumes:
   pgadmin:
 
 networks:
-  proxy_default:
+  proxy:
     external: true
+  default:
+    name: db

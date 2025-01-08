@@ -2,13 +2,12 @@ x-foundry: &foundry
   image: felddy/foundryvtt:release
   networks:
     - default
-    - proxy_default
+    - proxy
   restart: unless-stopped
   volumes:
     - cache:/data/container_cache
   environment:
     - CONTAINER_CACHE=/data/container_cache
-    - LETSENCRYPT_EMAIL=dev@jeschek.eu
 
 
 services:
@@ -35,5 +34,5 @@ volumes:
   cache:
 
 networks:
-  proxy_default:
+  proxy:
     external: true

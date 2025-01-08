@@ -1,29 +1,38 @@
-version: '3.8'
 services:
 
   nginx:
-    image: jwilder/nginx-proxy
+    image: nginxproxy/nginx-proxy:1.6
+    container_name: nginx-proxy
     ports:
       - '80:80'
       - '443:443'
     volumes:
-      - 'certs:/etc/nginx/certs:ro'
-      - 'vhostd:/etc/nginx/vhost.d'
-      - 'html:/usr/share/nginx/html'
+      - './conf.d:/etc/nginx/conf.d'
+      - './vhost.d:/etc/nginx/vhost.d'
+      - './htpasswd:/etc/nginx/htpasswd:ro'
       - '/var/run/docker.sock:/tmp/docker.sock:ro'
-      - "./nginx.conf:/etc/nginx/conf.d/docker.conf"
+      - 'certs:/etc/nginx/certs:ro'
+      - 'html:/usr/share/nginx/html'
     restart: unless-stopped
 
-  letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    volumes:
-      - 'certs:/etc/nginx/certs:rw'
-      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+  acme:
+    image: nginxproxy/acme-companion:2.5
+    container_name: nginx-proxy-acme
+    environment:
+      - DEFAULT_EMAIL=dev@jeschek.eu
     volumes_from:
       - nginx
+    volumes:
+      - 'certs:/etc/nginx/certs:rw'
+      - 'acme:/etc/acme.sh'
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
     restart: unless-stopped
 
 volumes:
-  certs:
-  vhostd:
   html:
+  certs:
+  acme:
+
+networks:
+  default:
+    name: proxy
