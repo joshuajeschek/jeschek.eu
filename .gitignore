@@ -1,3 +1,4 @@
 *.env
+!template.*.env
 *.key
 *.log
