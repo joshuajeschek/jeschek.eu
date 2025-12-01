@@ -1,0 +1,41 @@
+services:
+  app:
+    user: "0:0"
+    image: etherpad/etherpad:latest
+    tty: true
+    stdin_open: true
+    volumes:
+      - plugins:/opt/etherpad-lite/src/plugin_packages
+      - etherpad-var:/opt/etherpad-lite/var
+    env_file: .env
+    environment:
+      VIRTUAL_HOST: pad.jeschek.eu
+      LETSENCRYPT_HOST: pad.jeschek.eu
+      NODE_ENV: production
+      DB_CHARSET: utf8mb4
+      DB_HOST: postgres
+      DB_NAME: etherpad
+      DB_PORT: 5432
+      DB_TYPE: postgres
+      DB_USER: etherpad
+      # For now, the env var DEFAULT_PAD_TEXT cannot be unset or empty; it seems to be mandatory in the latest version of etherpad
+      DEFAULT_PAD_TEXT: Hi :)
+      DISABLE_IP_LOGGING: false
+      TRUST_PROXY: true
+      ETHERPAD_PLUGINS: "ep_image_insert"
+    restart: unless-stopped
+    networks:
+      - default
+      - db
+      - proxy
+
+volumes:
+  postgres_data:
+  plugins:
+  etherpad-var:
+
+networks:
+  proxy:
+    external: true
+  db:
+    external: true

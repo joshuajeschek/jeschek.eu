@@ -1,3 +1,4 @@
+# https://github.com/nextcloud/docker/tree/master/.examples/docker-compose/with-nginx-proxy/postgres/fpm
 services:
 
   redis:
@@ -5,7 +6,7 @@ services:
     restart: unless-stopped
 
   app:
-    image: nextcloud:30-fpm-alpine
+    image: nextcloud:32-fpm-alpine
     volumes:
       - nextcloud:/var/www/html:z
       - /mnt/storage/nextcloud:/var/www/html/data:z
@@ -13,6 +14,7 @@ services:
       - POSTGRES_HOST=postgres
       - REDIS_HOST=redis
       - NEXTCLOUD_HOSTNAME=cloud.jeschek.eu
+      - PHP_MEMORY_LIMIT=1024M
     env_file:
       - db.env
     depends_on:
@@ -20,10 +22,13 @@ services:
     networks:
       - default
       - db
+      - proxy
+    extra_hosts:
+      - "cloud.jeschek.eu:172.23.0.1"
     restart: unless-stopped
 
   cron:
-    image: nextcloud:30-fpm-alpine
+    image: nextcloud:32-fpm-alpine
     entrypoint: /cron.sh
     volumes:
       - nextcloud:/var/www/html:z
@@ -33,9 +38,13 @@ services:
     networks:
       - default
       - db
+      - proxy
+    extra_hosts:
+      - "cloud.jeschek.eu:172.23.0.1"
     restart: unless-stopped
 
   web:
+    # hostname: 'cloud.jeschek.eu'
     build: ./web
     volumes:
       - nextcloud:/var/www/html:z,ro
